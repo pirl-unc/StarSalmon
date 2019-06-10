@@ -9,7 +9,7 @@ are handled at this time.
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-02",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-03",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
