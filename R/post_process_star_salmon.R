@@ -74,15 +74,15 @@ post_process_star_salmon = function(
   
   # Input path ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # input_file_name = "McRee_salmon_quant.txt"
-  a("Reading in files from input_file_paths.")
-  a("")
+  a("Reading in files from input_file_paths:")
   read_data = mclapply(input_file_paths, function(file_path){
+    a("  ", file_path)
     sample_data = fread(file_path, select = c("Name", "NumReads"))%>% as.data.frame
     return_vector = sample_data$NumReads
     names(return_vector) = sample_data$Name
     return(return_vector)
   }, mc.cores = thread_num)
-  
+  a("")
   
   # want to name these after the names on the sample sheet
   #   will use the sample folder names to look up the Sample_ID's

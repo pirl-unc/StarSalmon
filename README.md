@@ -9,7 +9,7 @@ are handled at this time.
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-03",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-04",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -17,9 +17,9 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-03
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Fixed biomart folder name. Fixed to cleear readme of isoforms when running."
+my_comment="Added binfotron to dependencies for using the header and footer formatting."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-02 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.0-04 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -31,5 +31,5 @@ devtools::install_github("DanteBortone/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("DanteBortone/StarSalmon", ref = "0.0-02")
+devtools::install_github("DanteBortone/StarSalmon", ref = "0.0-04")
 ```

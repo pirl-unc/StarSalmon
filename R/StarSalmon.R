@@ -5,7 +5,7 @@
 #' data into ucsc_isoform_counts.tsv and hgnc_entrezid_gene_counts.tsv.  Only ucsc pipeline outputs 
 #' are handled at this time.
 #' 
-#' @import magrittr data.table parallel binfotron
+#' @import magrittr data.table parallel binfotron checkmate
 #' 
 #' @keywords internal
 "_PACKAGE"
