@@ -46,7 +46,9 @@ post_process_star_salmon = function(
   isoform_output_dir = file.path(output_dir,"ucsc_isoform_counts")
   isoform_output_path = file.path(isoform_output_dir, "ucsc_isoform_counts.tsv")
   dir.create(isoform_output_dir, showWarnings = F)
+  
   readme_path = file.path(isoform_output_dir, "readme.txt")
+  if(file.exists(readme_path)){ file.remove(readme_path)}
   
   a = function(...){
     my_output = paste0(...)
@@ -57,6 +59,7 @@ post_process_star_salmon = function(
   }
   
   a(paste0("Making isoform counts matrix: ", this_script_path) %>% as.header1)
+  a("")
   
   # Options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # limit_import_to_num_rows = -1 # set to int to limit import for debuging, '-1' to import all data
@@ -71,7 +74,8 @@ post_process_star_salmon = function(
   
   # Input path ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # input_file_name = "McRee_salmon_quant.txt"
-  
+  a("Reading in files from input_file_paths.")
+  a("")
   read_data = mclapply(input_file_paths, function(file_path){
     sample_data = fread(file_path, select = c("Name", "NumReads"))%>% as.data.frame
     return_vector = sample_data$NumReads
@@ -127,9 +131,10 @@ post_process_star_salmon = function(
   gene_output_dir = file.path(output_dir, "hgnc_entrezid_gene_counts")
   gene_output_path = file.path(gene_output_dir, "hgnc_entrezid_gene_counts.tsv")
   dir.create(gene_output_dir, showWarnings = F)
-  readme_path = file.path(gene_output_dir, "readme.txt")
   
+  readme_path = file.path(gene_output_dir, "readme.txt")
   if(file.exists(readme_path)){file.remove(readme_path)}
+  
   a = function(...){
     my_output = paste0(...)
     if(!is.null(readme_path)){
@@ -151,7 +156,7 @@ post_process_star_salmon = function(
   a("")
   # if(file.exists(get_biomart_hsa_ucsc_path())){
   a("Using saved biomaRt from binfotron.")
-  BM_results = readRDS(get_biomart_hsa_ucsc_path())
+  BM_results = readRDS(StarSalmon::get_biomart_hsa_ucsc_path())
   # } else {
   #   a("Getting gene data from biomaRt.")
   #   mart <- biomaRt::useMart(dataset="hsapiens_gene_ensembl", biomart='ENSEMBL_MART_ENSEMBL')#, host="http://www.ensembl.org")
