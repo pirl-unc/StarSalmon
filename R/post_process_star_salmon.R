@@ -42,6 +42,7 @@ post_process_star_salmon = function(
   
   library(org.Hs.eg.db)
   library(annotate)
+  library(binfotron)
 
   isoform_output_dir = file.path(output_dir,"ucsc_isoform_counts")
   isoform_output_path = file.path(isoform_output_dir, "ucsc_isoform_counts.tsv")
@@ -146,35 +147,14 @@ post_process_star_salmon = function(
   
   a(paste0("Making gene counts matrix: ", this_script_path) %>% as.header1)
   a("")
-  # mart=useDataset("hsapiens_gene_ensembl")
   a("Converting ucsc ID's to Entrez to fit gene set collections and immune gene signatures...")
   a("Looking up hgnc_symbol, entrezgene and gene_biotype of ucsc id's." %>% as.bullet)
-  # this step can have a high failure rate as the server can often be down and need some tinkering to ge the right one
-  # https://cran.r-project.org/web/packages/biomartr/vignettes/Functional_Annotation.html
-  # biomartr::getMarts()
-  # biomartr::getDatasets(mart = "ENSEMBL_MART_ENSEMBL")
   a("")
-  # if(file.exists(get_biomart_hsa_ucsc_path())){
   a("Using saved biomaRt from binfotron.")
   BM_results = readRDS(StarSalmon::get_biomart_hsa_ucsc_path())
-  # } else {
-  #   a("Getting gene data from biomaRt.")
-  #   mart <- biomaRt::useMart(dataset="hsapiens_gene_ensembl", biomart='ENSEMBL_MART_ENSEMBL')#, host="http://www.ensembl.org")
-  #   BM_results = biomaRt::getBM(
-  #     filters= "ucsc", 
-  #     attributes= c("ucsc", "hgnc_symbol", "entrezgene", "gene_biotype"),
-  #     values= unique_names,
-  #     mart= mart
-  #   )
-  # }
   a("")
   
-  # dans_genes = fread("GenesInKeySigs.txt", data.table = F)
-  # my_subset = BM_results[BM_results$entrezgene %in% dans_genes[,1],]
-  # sum(dans_genes[,1] %in% BM_results$entrezgene)
-  
   BM_results$gene_biotype = factor(BM_results$gene_biotype)
-  
   
   # for debugging this it's best to look at the BM_results matrix and make sure
   #   each step is filling in data the right way...
