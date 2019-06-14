@@ -62,65 +62,31 @@ post_process_star_salmon = function(
   a(paste0("Making isoform counts matrix: ", this_script_path) %>% as.header1)
   a("")
   
-  # Options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # limit_import_to_num_rows = -1 # set to int to limit import for debuging, '-1' to import all data
-  # # should_convert_NA_to_zeroes = T
-  # should_log2_transform = T
-  # # should_drop_rare_genes = T
-  # #required_gene_expression = 0.7 # genes will be dropped if expressed in < required_gene_expression of samples
-  # upper_quartile_normalize = TRUE
-  # 
-  # thread_num = 16
-  
-  
-  # Input path ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # input_file_name = "McRee_salmon_quant.txt"
   a("Reading in files from input_file_paths:")
-  read_data = mclapply(input_file_paths, function(file_path){
-    a("  ", file_path)
-    sample_data = fread(file_path, select = c("Name", "NumReads"))%>% as.data.frame
-    return_vector = sample_data$NumReads
-    names(return_vector) = sample_data$Name
-    return(return_vector)
+  read_data = mclapply(input_file_paths, function(input_file_path){
+    a("  ", input_file_path)
+    counts_df = fread(input_file_path, select = c("Name", "NumReads"), data.table = F)
+    return_list = lapply(counts_df[["NumReads"]], function(x)x) # rbindlist needs a list so we turn this into a list
+    names(return_list) = counts_df[["Name"]] # Name the list items so they get assigned to the right column
+    return(return_list)
   }, mc.cores = thread_num)
   a("")
   
-  # want to name these after the names on the sample sheet
-  #   will use the sample folder names to look up the Sample_ID's
-  sample_dat = fread(sample_data_path) %>% as.data.frame
-  rownames(sample_dat) = sample_dat[,sample_folder_column]
+  # convert to a data table according to the names of the list 
+  #   (ie, this doesn't assume the genes are in the same order)
+  dat = rbindlist(read_data, use.names = TRUE, fill = TRUE)
   
-  file_folders = lapply(input_file_paths, function(x){
-    path_parts = unlist(strsplit(x, "/", fixed = T))
-    return(path_parts[length(path_parts )-1])
-  }) %>% unlist()
+  # now lets make a lookup table (lut) to get the sample names fom the folder names
+  sample_dat = fread(sample_data_path, data.table = F)
+  rownames(sample_dat) = sample_dat[[sample_folder_column]]
+  file_folders = basename(dirname(input_file_paths))
+  sample_lut = sample_dat$Sample_ID
+  names(sample_lut) = sample_dat$Sample_Folder
+
+  # add the sample names
+  dat = data.frame(Sample_ID = sample_lut[file_folders], dat)
+  row.names(dat) = NULL
   
-  # read_data order is based on input file path order & file_folder order is based on input file folder order
-  #  so read data can be named with the sample_Ids in the order of the file folders
-  names(read_data) = sample_dat[file_folders, "Sample_ID"]
-  rm(sample_dat)
-  
-  # don't want to assume that all the data have the same column names
-  unique_names = names(read_data[[1]])
-  invisible( 
-    mclapply(read_data, function(a_sample){
-      unique_names <<- unique(c(unique_names, names(a_sample)))
-    }, mc.cores = thread_num)
-  )
-  unique_names = sort(unique_names)
-  # dat = data.frame(matrix(nrow = length(read_data), ncol = length(unique_names)))
-  # names(dat) = c(unique_names)
-  
-  # make sure the order of columns is the same
-  my_rows = mclapply(1:length(read_data), function(sample_index){
-    read_data[[sample_index]][unique_names] %>% as.numeric
-  }, mc.cores = thread_num)
-  
-  dat = data.frame(matrix(unlist(my_rows), ncol=length(unique_names), byrow=T, dimnames = list(c(), unique_names)))
-  
-  dat = data.frame(Sample_ID = names(read_data), dat)
-  
-  # manually checked that the order of the samples was right at this point by looking at a couple of quant.sf files.
   fwrite(dat, isoform_output_path, sep = "\t")
   
   # isoform output done
