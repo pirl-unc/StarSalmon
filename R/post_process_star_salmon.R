@@ -73,7 +73,7 @@ post_process_star_salmon = function(
   a("")
   
   # convert to a data table according to the names of the list 
-  #   (ie, this doesn't assume the genes are in the same order)
+  #   (ie, use.names = T won't assume the genes are in the same order)
   dat = rbindlist(read_data, use.names = TRUE, fill = TRUE)
   
   # now lets make a lookup table (lut) to get the sample names fom the folder names

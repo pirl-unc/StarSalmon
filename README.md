@@ -9,7 +9,7 @@ are handled at this time.
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-06",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-07",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -19,7 +19,7 @@ In bash:
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
 my_comment="Had to declare binfotron library in post_processing function or I'd get an error that check_integer couldn't be found.  Odd because it uses other functions of binfotron here without declaring them because they are marked on the DESCRIPTION file and on StarSalmon.R."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-06 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.0-07 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -31,5 +31,5 @@ devtools::install_github("DanteBortone/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("DanteBortone/StarSalmon", ref = "0.0-06")
+devtools::install_github("DanteBortone/StarSalmon", ref = "0.0-07")
 ```
