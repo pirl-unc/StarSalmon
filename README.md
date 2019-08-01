@@ -1,15 +1,20 @@
-Functions for writing commands and post processing the Star Salmon pipeline.
+Post processes output from the star salmon pipeline.
 
-Given a sample data matrix that indicates the sample name, sample folder name and input paths
-this script can write out pipeline commands to run star salmon on the cluster and post process the
-data into ucsc_isoform_counts.tsv and hgnc_entrezid_gene_counts.tsv.  Only ucsc pipeline outputs 
-are handled at this time.
-
+## Example
+``` r
+StarSalmon::post_process_star_salmon(
+  input_file_paths = input_file_paths,
+  output_dir = star_salmon_dir,
+  sample_data_path = sample_data_path,
+  thread_num = thread_num,
+  sample_folder_column = "run_accession"
+  )
+```
 
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-07",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-09",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -17,19 +22,19 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-07
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Reassembled package and added tag."
+my_comment="Added example to readme."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-07 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.0-08 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
 Restart R
 In R (local library, packrat library):
 ``` r
-devtools::install_github("DanteBortone/StarSalmon")
+devtools::install_gitlab("DanteBortone/StarSalmon")
 ```
 
 Or for a specific version:
 ``` r
-devtools::install_github("DanteBortone/StarSalmon", ref = "0.0-07")
+devtools::install_gitlab("DanteBortone/StarSalmon", ref = "0.0-08")
 ```
