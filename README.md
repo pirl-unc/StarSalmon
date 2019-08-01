@@ -17,7 +17,7 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-07
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Had to declare binfotron library in post_processing function or I'd get an error that check_integer couldn't be found.  Odd because it uses other functions of binfotron here without declaring them because they are marked on the DESCRIPTION file and on StarSalmon.R."
+my_comment="Reassembled package and added tag."
 git commit -am "$my_comment"; git push origin master
 git tag -a 0.0-07 -m "$my_comment"; git push -u origin --tags
 ```

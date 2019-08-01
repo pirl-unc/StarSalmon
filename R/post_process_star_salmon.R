@@ -81,7 +81,7 @@ post_process_star_salmon = function(
   rownames(sample_dat) = sample_dat[[sample_folder_column]]
   file_folders = basename(dirname(input_file_paths))
   sample_lut = sample_dat$Sample_ID
-  names(sample_lut) = sample_dat$Sample_Folder
+  names(sample_lut) = sample_dat[[sample_folder_column]]
 
   # add the sample names
   dat = data.frame(Sample_ID = sample_lut[file_folders], dat)
