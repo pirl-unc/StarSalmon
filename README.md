@@ -24,7 +24,7 @@ In bash:
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
 my_comment="Added example to readme."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-08 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.0-09 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
