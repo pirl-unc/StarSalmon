@@ -1,0 +1,24 @@
+Package: StarSalmon
+Version: 0.0-09
+Title: Functions for writing commands and post processing the Star Salmon pipeline.
+Description: Given a sample data matrix that indicate the sample name, sample folder name and input paths
+    this script can write out pipeline commands to run star salmon on the cluster and post process the
+    data into ucsc_isoform_counts.tsv and hgnc_entrezid_gene_counts.tsv.  Only ucsc pipeline outputs 
+    are handled at this time.
+Authors@R: 
+    person(given = "Dante",
+           family = "Bortone",
+           role = c("aut", "cre"),
+           email = "dantebortone@gmail.com")
+Depends:
+    magrittr,
+    data.table,
+    parallel,
+    binfotron,
+    checkmate
+BugReports: https://github.com/DanteBortone/StarSalmon/issues
+License: MIT + file LICENSE
+NeedsCompilation: no
+RoxygenNote: 6.1.1
+Encoding: UTF-8
+LazyData: false
