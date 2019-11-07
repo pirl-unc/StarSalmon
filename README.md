@@ -14,8 +14,8 @@ StarSalmon::post_process_star_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-09",
-  my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-10",
+  my_dir = "/datastore/alldata/shiny-server/rstudio-common/sent13/packages/StarSalmon_dev_sae")
 ```
 
 ## Push changes

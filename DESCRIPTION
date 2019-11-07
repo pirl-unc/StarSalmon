@@ -1,5 +1,5 @@
 Package: StarSalmon
-Version: 0.0-09
+Version: 0.0-10
 Title: Functions for writing commands and post processing the Star Salmon pipeline.
 Description: Given a sample data matrix that indicate the sample name, sample folder name and input paths
     this script can write out pipeline commands to run star salmon on the cluster and post process the
