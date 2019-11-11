@@ -31,10 +31,15 @@ git tag -a 0.0-09 -m "$my_comment"; git push -u origin --tags
 Restart R
 In R (local library, packrat library):
 ``` r
-devtools::install_gitlab("DanteBortone/StarSalmon")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 ```
 
 Or for a specific version:
 ``` r
-devtools::install_gitlab("DanteBortone/StarSalmon", ref = "0.0-08")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-09")
 ```
+
+## Previous locations
+https://sc.unc.edu/dbortone/starsalmon
+https://sc.unc.edu/benjamin-vincent-lab/starsalmon
+Moved to github so that the package could be accessed without a token.
