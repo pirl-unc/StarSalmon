@@ -5,7 +5,7 @@
 #' data into ucsc_isoform_counts.tsv and hgnc_entrezid_gene_counts.tsv.  Only ucsc pipeline outputs 
 #' are handled at this time.
 #' 
-#' @import data.table parallel
+#' @import data.table parallel annotate org.Hs.eg.db
 #' 
 #' @keywords internal
 "_PACKAGE"

@@ -40,10 +40,6 @@ post_process_star_salmon = function(
   thread_num = 16
 ){
   
-  # library(org.Hs.eg.db)
-  # library(annotate)
-  # library(binfotron)
-
   isoform_output_dir = file.path(output_dir,"ucsc_isoform_counts")
   isoform_output_path = file.path(isoform_output_dir, "ucsc_isoform_counts.tsv")
   dir.create(isoform_output_dir, showWarnings = F)
