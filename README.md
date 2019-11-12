@@ -22,7 +22,7 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-12
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Removed dependencies on magrittr, binfotron, and checkmate."
+my_comment="Rebuilt package."
 git commit -am "$my_comment"; git push origin master
 git tag -a 0.0-12 -m "$my_comment"; git push -u origin --tags
 ```
