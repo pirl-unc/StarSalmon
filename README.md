@@ -15,7 +15,6 @@ StarSalmon::post_process_star_salmon(
 In R:
 ``` r
 housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-12",
-  my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
 ## Push changes
@@ -31,10 +30,15 @@ git tag -a 0.0-12 -m "$my_comment"; git push -u origin --tags
 Restart R
 In R (local library, packrat library):
 ``` r
-devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 ```
 
 Or for a specific version:
 ``` r
 devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-12")
 ```
+
+## Previous locations
+https://sc.unc.edu/dbortone/starsalmon
+https://sc.unc.edu/benjamin-vincent-lab/starsalmon
+Moved to github so that the package could be accessed without a token.
