@@ -14,7 +14,7 @@ StarSalmon::post_process_star_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-10",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-12",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -24,7 +24,7 @@ In bash:
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
 my_comment="Removed dependencies on magrittr, binfotron, and checkmate."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-10 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.0-12 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -36,5 +36,5 @@ devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-10")
+devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-12")
 ```
