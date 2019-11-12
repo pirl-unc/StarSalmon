@@ -40,9 +40,9 @@ post_process_star_salmon = function(
   thread_num = 16
 ){
   
-  library(org.Hs.eg.db)
-  library(annotate)
-  library(binfotron)
+  # library(org.Hs.eg.db)
+  # library(annotate)
+  # library(binfotron)
 
   isoform_output_dir = file.path(output_dir,"ucsc_isoform_counts")
   isoform_output_path = file.path(isoform_output_dir, "ucsc_isoform_counts.tsv")
@@ -59,7 +59,7 @@ post_process_star_salmon = function(
     message(my_output)
   }
   
-  a(paste0("Making isoform counts matrix: ", this_script_path) %>% as.header1)
+  a(paste0("## Making isoform counts matrix: ", this_script_path))
   a("")
   
   a("Reading in files from input_file_paths:")
@@ -111,10 +111,10 @@ post_process_star_salmon = function(
   }
   
   
-  a(paste0("Making gene counts matrix: ", this_script_path) %>% as.header1)
+  a(paste0("## Making gene counts matrix: ", this_script_path))
   a("")
   a("Converting ucsc ID's to Entrez to fit gene set collections and immune gene signatures...")
-  a("Looking up hgnc_symbol, entrezgene and gene_biotype of ucsc id's." %>% as.bullet)
+  a("* Looking up hgnc_symbol, entrezgene and gene_biotype of ucsc id's.")
   a("")
   a("Using saved biomaRt from binfotron.")
   BM_results = readRDS(StarSalmon::get_biomart_hsa_ucsc_path())
@@ -125,7 +125,7 @@ post_process_star_salmon = function(
   # for debugging this it's best to look at the BM_results matrix and make sure
   #   each step is filling in data the right way...
   
-  a(paste0("Restricting gene_biotypes to: ", paste0(gene_biotypes, collapse = ", ")) %>% as.bullet)
+  a(paste0("* Restricting gene_biotypes to: ", paste0(gene_biotypes, collapse = ", ")))
   BM_results = BM_results[ BM_results$gene_biotype %in% gene_biotypes, ]
   
   missing_ids = which(is.na(BM_results$entrezgene))
@@ -138,7 +138,7 @@ post_process_star_salmon = function(
   
   symbols_to_use = BM_results$hgnc_symbol[fill_in_ids_using_symbol_indices]
   
-  a("Used hgnc symbols to fill in missing entrez ids." %>% as.bullet)
+  a("* Used hgnc symbols to fill in missing entrez ids.")
   # mclapply takes 3x longer
   fill_in_ids = unlist(lapply(1:length(symbols_to_use), function(x){ # very slow but mclapply runs into errors
     gene_id = as.character(paste0(unlist(lookUp(symbols_to_use[x],'org.Hs.eg','SYMBOL2EG')), collapse = ","))
@@ -152,9 +152,9 @@ post_process_star_salmon = function(
   BM_results$fill_in_ids[fill_in_ids_using_symbol_indices] = fill_in_ids
   
   
-  ids_to_use = BM_results$entrezgene[fill_in_symbols_using_id_indices] %>% as.character
+  ids_to_use = as.character(BM_results$entrezgene[fill_in_symbols_using_id_indices])
   
-  a("Used entrez ids to fill in missing hgnc symbols." %>% as.bullet)
+  a("* Used entrez ids to fill in missing hgnc symbols.")
   # mclapply takes 3x longer
   fill_in_symbols = unlist(lapply(1:length(ids_to_use), function(x){ # very slow but mclapply runs into errors
     gene_name = as.character(paste0(unlist(lookUp(ids_to_use[x],'org.Hs.eg','SYMBOL')), collapse = ","))
@@ -186,8 +186,8 @@ post_process_star_salmon = function(
   BM_results$fin_symbols[BM_results$fin_symbols == "NA"] = NA
   BM_results$fin_symbols[BM_results$fin_symbols == ""] = NA
   
-  a("Dropped ensembl data columns with no information on hgnc or entrez." %>% as.bullet)
-  BM_results = BM_results[ ((BM_results$fin_ids %>% is_not_na) & (BM_results$fin_symbols %>% is_not_na)), ]
+  a("* Dropped ensembl data columns with no information on hgnc or entrez.")
+  BM_results = BM_results[ ((!is.na(BM_results$fin_ids)) & (!is.na(BM_results$fin_symbols))), ]
   
   
   BM_results = tidyr::unite(BM_results, combined_names, fin_symbols, fin_ids, sep = "|", remove = FALSE)
@@ -211,8 +211,8 @@ post_process_star_salmon = function(
   names(converted_dat) = c("Sample_ID", combined_names)
   converted_dat$Sample_ID = dat$Sample_ID
   
-  a("Made combined names from hgnc|entrez" %>% as.bullet)
-  a("Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data." %>% as.bullet)
+  a("* Made combined names from hgnc|entrez")
+  a("* Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data.")
   a("")
   
   for(name in combined_names){
