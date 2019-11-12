@@ -2,8 +2,5 @@
 
 export(get_biomart_hsa_ucsc_path)
 export(post_process_star_salmon)
-import(binfotron)
-import(checkmate)
 import(data.table)
-import(magrittr)
 import(parallel)
