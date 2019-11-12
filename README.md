@@ -31,10 +31,10 @@ git tag -a 0.0-10 -m "$my_comment"; git push -u origin --tags
 Restart R
 In R (local library, packrat library):
 ``` r
-devtools::install_gitlab("DanteBortone/StarSalmon")
+devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon")
 ```
 
 Or for a specific version:
 ``` r
-devtools::install_gitlab("DanteBortone/StarSalmon", ref = "0.0-08")
+devtools::install_gitlab("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-10")
 ```
