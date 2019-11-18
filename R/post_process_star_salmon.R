@@ -197,49 +197,49 @@ post_process_star_salmon = function(
   
   tx2gene = BM_results[,1:2]
 
-  # # Dup_Ensemble could be Dup_UCSC... it's just the original gene names
-  # BM_results$Dup_Ensembl = (BM_results$ucsc %in% BM_results$ucsc[duplicated(BM_results$ucsc)])
-  # BM_results$Dup_Comb = (BM_results$combined_names %in% BM_results$combined_names[duplicated(BM_results$combined_names)])
-  # 
-  # # we have duplicated ensembl and duplicated combined names at this point.  some are even both!
-  # # the next step is to get the sorted levels of the combined names
-  # #  these will be our column names for our unnormalized data columns
-  # # then go through the names and get the ensembls that match them
-  # # add these columns and put the result in the unnormalized data colunn
-  # 
-  # combined_names = unique(BM_results$combined_names)
-  # combined_names = combined_names[order(combined_names)]
-  # 
-  # converted_dat = data.frame(matrix(nrow = nrow(dat), ncol = length(combined_names) +1 ))
-  # names(converted_dat) = c("Sample_ID", combined_names)
-  # converted_dat$Sample_ID = dat$Sample_ID
-  # 
-  # a("Made combined names from hgnc|entrez" %>% as.bullet)
-  # a("Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data." %>% as.bullet)
-  # a("")
-  # 
-  # for(name in combined_names){
-  #   ensemble_subdat = BM_results[BM_results$combined_names == name,]
-  #   ensembls = ensemble_subdat$ucsc # these are the columns we need to add to get our data column
-  # 
-  #   data_subdat = dat[,ensembls, drop = F]
-  #   return_data = apply(data_subdat, 1, sum, na.rm = F)
-  #   converted_dat[[name]] = return_data
-  # }
-  # 
-  # dat = converted_dat
-  # rm(converted_dat)
-  # 
-  # dat = dat[order(dat$Sample_ID), ]
-  # 
-  # # drop columns which have a sum of 0
-  # col_sums = apply(dat[,2:ncol(dat)], 2, sum)
-  # dat = dat[, c(TRUE, col_sums > 0)]
-  # 
-  # fwrite(dat, gene_output_path, sep = "\t")
-  # 
-  # # gene count output done
-  # 
+  # Dup_Ensemble could be Dup_UCSC... it's just the original gene names
+  BM_results$Dup_Ensembl = (BM_results$ucsc %in% BM_results$ucsc[duplicated(BM_results$ucsc)])
+  BM_results$Dup_Comb = (BM_results$combined_names %in% BM_results$combined_names[duplicated(BM_results$combined_names)])
+
+  # we have duplicated ensembl and duplicated combined names at this point.  some are even both!
+  # the next step is to get the sorted levels of the combined names
+  #  these will be our column names for our unnormalized data columns
+  # then go through the names and get the ensembls that match them
+  # add these columns and put the result in the unnormalized data colunn
+
+  combined_names = unique(BM_results$combined_names)
+  combined_names = combined_names[order(combined_names)]
+
+  converted_dat = data.frame(matrix(nrow = nrow(dat), ncol = length(combined_names) +1 ))
+  names(converted_dat) = c("Sample_ID", combined_names)
+  converted_dat$Sample_ID = dat$Sample_ID
+
+  a("Made combined names from hgnc|entrez" %>% as.bullet)
+  a("Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data." %>% as.bullet)
+  a("")
+
+  for(name in combined_names){
+    ensemble_subdat = BM_results[BM_results$combined_names == name,]
+    ensembls = ensemble_subdat$ucsc # these are the columns we need to add to get our data column
+
+    data_subdat = dat[,ensembls, drop = F]
+    return_data = apply(data_subdat, 1, sum, na.rm = F)
+    converted_dat[[name]] = return_data
+  }
+
+  dat = converted_dat
+  rm(converted_dat)
+
+  dat = dat[order(dat$Sample_ID), ]
+
+  # drop columns which have a sum of 0
+  col_sums = apply(dat[,2:ncol(dat)], 2, sum)
+  dat = dat[, c(TRUE, col_sums > 0)]
+
+  fwrite(dat, gene_output_path, sep = "\t")
+
+  # gene count output done
+
   
 
   # set up TPM output
