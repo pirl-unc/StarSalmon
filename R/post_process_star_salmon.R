@@ -43,6 +43,7 @@ post_process_star_salmon = function(
   library(org.Hs.eg.db)
   library(annotate)
   library(binfotron)
+  library(tximport)
 
   isoform_output_dir = file.path(output_dir,"ucsc_isoform_counts")
   isoform_output_path = file.path(isoform_output_dir, "ucsc_isoform_counts.tsv")
@@ -82,7 +83,7 @@ post_process_star_salmon = function(
   file_folders = basename(dirname(input_file_paths))
   sample_lut = sample_dat$Sample_ID
   names(sample_lut) = sample_dat[[sample_folder_column]]
-
+  
   # add the sample names
   dat = data.frame(Sample_ID = sample_lut[file_folders], dat)
   row.names(dat) = NULL
@@ -193,51 +194,55 @@ post_process_star_salmon = function(
   BM_results = tidyr::unite(BM_results, combined_names, fin_symbols, fin_ids, sep = "|", remove = FALSE)
 
   BM_results = BM_results[, c("ucsc", "fin_symbols", "fin_ids", "combined_names")]
+  
+  tx2gene = BM_results[,1:2]
 
-  # Dup_Ensemble could be Dup_UCSC... it's just the original gene names
-  BM_results$Dup_Ensembl = (BM_results$ucsc %in% BM_results$ucsc[duplicated(BM_results$ucsc)])
-  BM_results$Dup_Comb = (BM_results$combined_names %in% BM_results$combined_names[duplicated(BM_results$combined_names)])
+  # # Dup_Ensemble could be Dup_UCSC... it's just the original gene names
+  # BM_results$Dup_Ensembl = (BM_results$ucsc %in% BM_results$ucsc[duplicated(BM_results$ucsc)])
+  # BM_results$Dup_Comb = (BM_results$combined_names %in% BM_results$combined_names[duplicated(BM_results$combined_names)])
+  # 
+  # # we have duplicated ensembl and duplicated combined names at this point.  some are even both!
+  # # the next step is to get the sorted levels of the combined names
+  # #  these will be our column names for our unnormalized data columns
+  # # then go through the names and get the ensembls that match them
+  # # add these columns and put the result in the unnormalized data colunn
+  # 
+  # combined_names = unique(BM_results$combined_names)
+  # combined_names = combined_names[order(combined_names)]
+  # 
+  # converted_dat = data.frame(matrix(nrow = nrow(dat), ncol = length(combined_names) +1 ))
+  # names(converted_dat) = c("Sample_ID", combined_names)
+  # converted_dat$Sample_ID = dat$Sample_ID
+  # 
+  # a("Made combined names from hgnc|entrez" %>% as.bullet)
+  # a("Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data." %>% as.bullet)
+  # a("")
+  # 
+  # for(name in combined_names){
+  #   ensemble_subdat = BM_results[BM_results$combined_names == name,]
+  #   ensembls = ensemble_subdat$ucsc # these are the columns we need to add to get our data column
+  # 
+  #   data_subdat = dat[,ensembls, drop = F]
+  #   return_data = apply(data_subdat, 1, sum, na.rm = F)
+  #   converted_dat[[name]] = return_data
+  # }
+  # 
+  # dat = converted_dat
+  # rm(converted_dat)
+  # 
+  # dat = dat[order(dat$Sample_ID), ]
+  # 
+  # # drop columns which have a sum of 0
+  # col_sums = apply(dat[,2:ncol(dat)], 2, sum)
+  # dat = dat[, c(TRUE, col_sums > 0)]
+  # 
+  # fwrite(dat, gene_output_path, sep = "\t")
+  # 
+  # # gene count output done
+  # 
+  
 
-  # we have duplicated ensembl and duplicated combined names at this point.  some are even both!
-  # the next step is to get the sorted levels of the combined names
-  #  these will be our column names for our unnormalized data columns
-  # then go through the names and get the ensembls that match them
-  # add these columns and put the result in the unnormalized data colunn
-
-  combined_names = unique(BM_results$combined_names)
-  combined_names = combined_names[order(combined_names)]
-
-  converted_dat = data.frame(matrix(nrow = nrow(dat), ncol = length(combined_names) +1 ))
-  names(converted_dat) = c("Sample_ID", combined_names)
-  converted_dat$Sample_ID = dat$Sample_ID
-
-  a("Made combined names from hgnc|entrez" %>% as.bullet)
-  a("Used combined_name to lookup all ensembl id producing that combined_name and summed those data columns to get the combined_name data." %>% as.bullet)
-  a("")
-
-  for(name in combined_names){
-    ensemble_subdat = BM_results[BM_results$combined_names == name,]
-    ensembls = ensemble_subdat$ucsc # these are the columns we need to add to get our data column
-
-    data_subdat = dat[,ensembls, drop = F]
-    return_data = apply(data_subdat, 1, sum, na.rm = F)
-    converted_dat[[name]] = return_data
-  }
-
-  dat = converted_dat
-  rm(converted_dat)
-
-  dat = dat[order(dat$Sample_ID), ]
-
-  # drop columns which have a sum of 0
-  col_sums = apply(dat[,2:ncol(dat)], 2, sum)
-  dat = dat[, c(TRUE, col_sums > 0)]
-
-  fwrite(dat, gene_output_path, sep = "\t")
-
-  # gene count output done
-
-### set up TPM output
+  # set up TPM output
 
   TPM_output_dir = file.path(output_dir, "TPM_averages")
   TPM_output_path = file.path(TPM_output_dir, "TPM_averages.tsv")
@@ -254,50 +259,20 @@ post_process_star_salmon = function(
     message(my_output)
   }
 
-  a(paste0("Making TPM matrix: ", this_script_path) %>% as.header1)
+  a(paste0("Use tximport pkg to import transcript-level abundance, estimate counts/transcript lengths, summarize into matrix", this_script_path) %>% as.header1)
   a("")
 
-  a("Reading in files from input_file_paths:")
+  temp_files_df = as.data.table(matrix(input_file_paths, nrow=length(input_file_paths), byrow=T), stringsAsFactors = FALSE)
+  colnames(temp_files_df) = c("input_file_path")
+  temp_files_df[, ID := gsub("_quant.sf", "", basename(temp_files_df$input_file_path))]
 
-### get TPM data to create CIBERSORTx input file
-  TPM_data = mclapply(input_file_paths, function(input_file_path){
-    a("  ", input_file_path)
-    counts_df = fread(input_file_path, select = c("Name", "TPM"), data.table = F)
-    return_list = lapply(counts_df[["TPM"]], function(x)x) # rbindlist needs a list so we turn this into a list
-    names(return_list) = counts_df[["Name"]] # Name the list items so they get assigned to the right column
-    return(return_list)
-  }, mc.cores = thread_num)
-
-  # convert to data.table
-  dat = rbindlist(TPM_data, use.names = TRUE, fill = TRUE)
-
-  # use sample name look up table from isoform analysis
-  dat = data.frame(Sample_ID = sample_lut[file_folders], dat)
-  row.names(dat) = NULL
-
-  # use combined names from gene count analysis
-  converted_dat = data.frame(matrix(nrow = nrow(dat), ncol = length(combined_names) +1 ))
-  names(converted_dat) = c("Sample_ID", combined_names)
-  converted_dat$Sample_ID = dat$Sample_ID
-
-  a("Used combined names from gene count analysis" %>% as.bullet)
-  a("Used combined_name to lookup all ensembl id producing that combined_name and AVERAGED those data columns to get the combined_name data." %>% as.bullet)
-  a("")
-  # AVERAGE TPM for combined_names with multiple ucsc IDs
-  for(name in combined_names){
-    ensemble_subdat = BM_results[BM_results$combined_names == name,]
-    ensembls = ensemble_subdat$ucsc # these are the columns we need to add to get our data column
-    data_subdat = dat[,ensembls, drop = F]
-    return_data = apply(data_subdat, 1, mean, na.rm = F) # average for TPM
-    converted_dat[[name]] = return_data
-  }
-
-  # transpose for proper format
-  dat = transpose(converted_dat, keep.names = "Sample", make.names = "Sample_ID")
-  dat = separate(dat, Sample, into = c("Sample", "dump"), sep = "\\|")
-  dat$dump <- NULL
-
+  files <- input_file_paths
+  names(files) = temp_files_df$ID
+  txi.salmon <- tximport(files, type = "salmon", tx2gene = tx2gene)
+  
   # Write to output file
-  fwrite(dat, TPM_output_path, sep = "\t")
+  write.table(data.frame("Sample"=rownames(txi.salmon$abundance),txi.salmon$abundance), TPM_output_path, row.names=FALSE, sep = "\t", quote = FALSE)
+  
+  # fwrite(txi.salmon$counts, TPM_output_path, sep = "\t")
 
 }
