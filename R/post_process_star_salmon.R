@@ -280,9 +280,9 @@ post_process_star_salmon = function(
     }
   }
 
-  files <- input_file_paths
-  names(files) = temp_files_df$ID
-  txi.salmon <- tximport(files, type = "salmon", tx2gene = tx2gene)
+  files = input_file_paths
+  names(files) = names_df$Sample_ID
+  txi.salmon = tximport(files, type = "salmon", tx2gene = tx2gene)
   
   # Write to output file
   write.table(data.frame("Sample"=rownames(txi.salmon$abundance),txi.salmon$abundance), TPM_output_path, row.names=FALSE, sep = "\t", quote = FALSE)
