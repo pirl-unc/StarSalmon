@@ -21,6 +21,7 @@ get_biomart_hsa_ucsc_path
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 \seealso{
-Other mart: \code{\link{post_process_star_salmon}}
+Other mart: 
+\code{\link{post_process_star_salmon}()}
 }
 \concept{mart}

@@ -265,6 +265,20 @@ post_process_star_salmon = function(
   temp_files_df = as.data.table(matrix(input_file_paths, nrow=length(input_file_paths), byrow=T), stringsAsFactors = FALSE)
   colnames(temp_files_df) = c("input_file_path")
   temp_files_df[, ID := gsub("_quant.sf", "", basename(temp_files_df$input_file_path))]
+  if("Sample_Folder" %in% colnames(sample_dat)) {  #Riaz
+    names_df = merge(temp_files_df, sample_dat, by.x = "ID", by.y = "Sample_Folder")
+  }  else if ("run_accession" %in% colnames(sample_dat)) {  #HugoLo
+    names_df = merge(temp_files_df, sample_dat, by.x = "ID", by.y = "run_accession")
+  } else {
+    rnaseq_file_path = paste0(RAW_DATA_DIR, "/rnaseq_fastq_paths/", "rnaseq_fastq_paths.tsv")
+    SRR_dat = fread(rnaseq_file_path)
+    if("run_accession" %in% colnames(SRR_dat)) {  #Prins
+      names_df = merge(temp_files_df, SRR_dat, by.x = "ID", by.y = "run_accession")
+    } else {
+      names_df = merge(temp_files_df, SRR_dat, by.x = "ID", by.y = "Sample_ID", all.x = TRUE)  #Gide
+      setnames(names_df, "ID", "Sample_ID")
+    }
+  }
 
   files <- input_file_paths
   names(files) = temp_files_df$ID

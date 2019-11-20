@@ -4,12 +4,17 @@
 \alias{post_process_star_salmon}
 \title{post_process_star_salmon}
 \usage{
-post_process_star_salmon(input_file_paths, output_dir, sample_data_path,
-  gene_biotypes = c("IG_C_gene", "IG_D_gene", "IG_J_gene", "IG_V_gene",
-  "misc_RNA", "processed_transcript", "protein_coding", "TR_C_gene",
-  "TR_D_gene", "TR_J_gene", "TR_V_gene", "lincRNA"),
+post_process_star_salmon(
+  input_file_paths,
+  output_dir,
+  sample_data_path,
+  gene_biotypes = c("IG_C_gene", "IG_D_gene", "IG_J_gene", "IG_V_gene", "misc_RNA",
+    "processed_transcript", "protein_coding", "TR_C_gene", "TR_D_gene", "TR_J_gene",
+    "TR_V_gene", "lincRNA"),
   sample_folder_column = "Sample_Folder",
-  sample_id_column = "Sample_ID", thread_num = 16)
+  sample_id_column = "Sample_ID",
+  thread_num = 16
+)
 }
 \arguments{
 \item{input_file_paths}{Character vector of paths to the pipeline output data.}
@@ -39,6 +44,7 @@ post_process_star_salmon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 \seealso{
-Other mart: \code{\link{get_biomart_hsa_ucsc_path}}
+Other mart: 
+\code{\link{get_biomart_hsa_ucsc_path}()}
 }
 \concept{mart}
