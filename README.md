@@ -2,7 +2,7 @@ Post processes output from the star salmon pipeline.
 
 ## Example
 ``` r
-StarSalmon::post_process_star_salmon(
+StarSalmon::post_process_salmon(
   input_file_paths = input_file_paths,
   output_dir = star_salmon_dir,
   sample_data_path = sample_data_path,
@@ -14,7 +14,7 @@ StarSalmon::post_process_star_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-16",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-00",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -22,9 +22,9 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.0-16
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Added annotate and org.Hs.eg.db"
+my_comment="Added input option of grch38 or hg38 & lots of new output options."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.0-16 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.1-00 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -36,7 +36,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.0-16")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-00")
 ```
 
 ## Previous locations
