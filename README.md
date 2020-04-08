@@ -14,7 +14,7 @@ StarSalmon::post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-00",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-01",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -24,7 +24,7 @@ In bash:
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
 my_comment="Added input option of grch38 or hg38 & lots of new output options."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.1-00 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.1-01 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
