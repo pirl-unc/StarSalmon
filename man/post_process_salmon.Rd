@@ -42,7 +42,7 @@ post_process_salmon(this_script_path = "", input_file_paths, output_dir,
 \item{counts_or_tpm}{'counts' or 'tpm'}
 }
 \value{
-A list of paths to the files.
+A vector of paths to the files.
 }
 \description{
 Joins individual sample files into one tsv file.  Also converts ucsc names to hgnc_symbol|entrez_ids

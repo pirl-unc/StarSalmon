@@ -21,7 +21,7 @@
 #' @param ref options 'grch38' with ensemble output or 'hg38' with ucsc output
 #' @param thread_num Integer number of threads to run mclapply statements
 #' @param this_script_path Path to script that runs this function for documentation urposes
-#' @return A list of paths to the files.
+#' @return A vector of paths to the files.
 #' 
 #' @family mart
 #' 
@@ -89,7 +89,8 @@ post_process_salmon = function(
   #   (ie, use.names = T won't assume the genes are in the same order)
   dat = rbindlist(read_data, use.names = TRUE, fill = TRUE)
 
-
+  output_paths = c()
+  
   # add the sample names
   dat = data.frame(Sample_ID = names(read_data), dat)
   row.names(dat) = NULL
@@ -103,13 +104,18 @@ post_process_salmon = function(
     }
     
     fwrite(dat, isoform_output_path, sep = "\t")
+    output_paths = c(output_paths, isoform_output_path)
     
     if(output_upper_quartile_norm || output_log2_upper_quartile_norm){
       norm_dat = binfotron::normalize_rows_by_quartile(data.table(dat))
-      fwrite(norm_dat,  file.path(output_dir, paste0("norm_transcript_", counts_or_tpm,".tsv")), sep = "\t")
+      output_upper_quartile_norm_path = file.path(output_dir, paste0("norm_transcript_", counts_or_tpm,".tsv"))
+      output_paths = c(output_paths, output_upper_quartile_norm_path)
+      fwrite(norm_dat, output_upper_quartile_norm_path, sep = "\t")
       if(output_log2_upper_quartile_norm){
         log2_norm_dat = binfotron::log_transform_plus(norm_dat)
-        fwrite(log2_norm_dat,  file.path(output_dir, paste0("log2_norm_transcript_", counts_or_tpm,".tsv")), sep = "\t")
+        output_log2_upper_quartile_norm_path = file.path(output_dir, paste0("log2_norm_transcript_", counts_or_tpm,".tsv"))
+        output_paths = c(output_paths, output_log2_upper_quartile_norm_path)
+        fwrite(log2_norm_dat,  output_log2_upper_quartile_norm_path, sep = "\t")
       }
     }
   }
@@ -242,16 +248,25 @@ post_process_salmon = function(
     my_dt %<>% t %>% as.data.table 
     
     my_dt = data.table(Sample_ID = my_samples, my_dt)
-    
-    fwrite(my_dt, file.path(output_dir, paste0(file_prefix, counts_or_tpm,".tsv")), sep = "\t")
+    my_unnorm_path = file.path(output_dir, paste0(file_prefix, counts_or_tpm,".tsv"))
+    output_paths = c(output_paths, my_unnorm_path)
+    fwrite(my_dt, my_unnorm_path, sep = "\t")
     
     if(output_upper_quartile_norm || output_log2_upper_quartile_norm){
       norm_dat = binfotron::normalize_rows_by_quartile(data.table(my_dt))
-      if(output_upper_quartile_norm) fwrite(norm_dat,  file.path(output_dir, paste0(file_prefix, "norm_",counts_or_tpm,".tsv")), sep = "\t")
+      if(output_upper_quartile_norm) {
+        norm_path = file.path(output_dir, paste0(file_prefix, "norm_",counts_or_tpm,".tsv"))
+        output_paths = c(output_paths, norm_path)
+        fwrite(norm_dat,  norm_path, sep = "\t")
+      }
       if(output_log2_upper_quartile_norm){
         log2_norm_dat = binfotron::log_transform_plus(norm_dat)
-        fwrite(log2_norm_dat,  file.path(output_dir, paste0(file_prefix, "log2_norm_",counts_or_tpm,".tsv")), sep = "\t")
+        log2_path = file.path(output_dir, paste0(file_prefix, "log2_norm_",counts_or_tpm,".tsv"))
+        output_paths = c(output_paths, log2_path)
+        
+        fwrite(log2_norm_dat,  log2_path, sep = "\t")
       }
     }
   }
+  return(output_paths)
 }
