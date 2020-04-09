@@ -4,13 +4,12 @@
 \alias{post_process_salmon}
 \title{post_process_salmon}
 \usage{
-
-  post_process_salmon(this_script_path = housekeeping::get_script_dir_path(include_file_name
-  = T), input_file_paths, output_dir, ref = "grch38",
-  gene_biotypes = c("protein_coding", "IG_C_gene", "IG_D_gene",
-  "IG_J_gene", "IG_V_gene", "TR_C_gene", "TR_D_gene", "TR_J_gene",
-  "TR_V_gene"), thread_num = 8, output_transcript_matrix = TRUE,
-  output_hgnc_matrix = TRUE, output_entrez_id_matrix = FALSE,
+post_process_salmon(this_script_path = "", input_file_paths, output_dir,
+  ref = "grch38", gene_biotypes = c("protein_coding", "IG_C_gene",
+  "IG_D_gene", "IG_J_gene", "IG_V_gene", "TR_C_gene", "TR_D_gene",
+  "TR_J_gene", "TR_V_gene"), thread_num = 8,
+  output_transcript_matrix = TRUE, output_hgnc_matrix = TRUE,
+  output_entrez_id_matrix = FALSE,
   output_piped_hugo_entrez_id_matrix = FALSE,
   output_upper_quartile_norm = TRUE,
   output_log2_upper_quartile_norm = TRUE, counts_or_tpm = "counts")

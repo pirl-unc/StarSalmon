@@ -1,5 +1,5 @@
 Package: StarSalmon
-Version: 0.1-01
+Version: 0.1-02
 Title: Functions for writing commands and post processing the Star Salmon pipeline.
 Description: Given a sample data matrix that indicate the sample name, sample folder name and input paths
     this script can write out pipeline commands to run star salmon on the cluster and post process the
@@ -14,7 +14,8 @@ Depends:
     data.table,
     parallel,
     annotate,
-    org.Hs.eg.db
+    org.Hs.eg.db,
+    binfotron
 BugReports: https://github.com/DanteBortone/StarSalmon/issues
 License: MIT + file LICENSE
 NeedsCompilation: no

@@ -27,7 +27,7 @@
 #' 
 #' @export
 post_process_salmon = function(
-  this_script_path = housekeeping::get_script_dir_path(include_file_name = T),
+  this_script_path = '',
   input_file_paths,# = system(paste0("ls ", RAW_DATA_DIR, "/pipeline_output/star_salmon/*/*_quant.sf"), intern = TRUE)
   output_dir,# = file.path(base_dir, "post_processing", "star_salmon")
   ref = "grch38", # options 'grch38' with ensemble output or 'hg38' with ucsc output
@@ -44,7 +44,8 @@ post_process_salmon = function(
   counts_or_tpm = "counts"
 ){
   
-
+  library(magrittr)
+  
   dir.create(output_dir, showWarnings = F)
   
   readme_path = file.path(output_dir, "readme.txt")
@@ -55,7 +56,7 @@ post_process_salmon = function(
     if(!is.null(readme_path)){
       write(my_output, readme_path, append = TRUE)
     }
-    message(my_output)
+    cat(paste0(my_output,"\n"))
   }
   
   a(paste0("## Making isoform counts matrix: ", this_script_path))
@@ -131,6 +132,8 @@ post_process_salmon = function(
   
   # for debugging this it's best to look at the BM_results matrix and make sure
   #   each step is filling in data the right way...
+  a(paste0("* Starting with gene_biotypes: ", paste0(unique(BM_results$gene_biotype), collapse = ", ")))
+  
   a(paste0("* Restricting gene_biotypes to: ", paste0(gene_biotypes, collapse = ", ")))
   BM_results = BM_results[ BM_results$gene_biotype %in% gene_biotypes, ]
   
