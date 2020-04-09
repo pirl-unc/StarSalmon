@@ -4,19 +4,19 @@ Post processes output from the star salmon pipeline.
 ``` r
 post_process_salmon(
   this_script_path = housekeeping::get_script_dir_path(include_file_name = T),
-  input_file_paths = <input_file_paths> intern = TRUE)
+  input_file_paths = <input_file_paths>,
   output_dir = <output_dir>,
   ref = "grch38",
   gene_biotypes = c('protein_coding', 
                     'IG_C_gene','IG_D_gene', 'IG_J_gene', 'IG_V_gene',
                     'TR_C_gene', 'TR_D_gene', 'TR_J_gene','TR_V_gene'),
   thread_num = 8,
-  output_transcript_matrix = TRUE,
-  output_hgnc_matrix = TRUE,
-  output_entrez_id_matrix = TRUE,
-  output_piped_hugo_entrez_id_matrix = TRUE,
-  output_upper_quartile_norm = TRUE,
-  output_log2_upper_quartile_norm = TRUE,
+  output_transcript_matrix = F,
+  output_hgnc_matrix = T,
+  output_entrez_id_matrix = F,
+  output_piped_hugo_entrez_id_matrix = F,
+  output_upper_quartile_norm = F,
+  output_log2_upper_quartile_norm = F,
   counts_or_tpm = "counts"
 )
 ```
@@ -24,7 +24,7 @@ post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-02",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-03",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -34,7 +34,7 @@ In bash:
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
 my_comment="Minor comment changes.  Added output of all gene_biotypes to readme.txt"
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.1-02 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.1-03 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -46,7 +46,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-01")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-03")
 ```
 
 ## Previous locations
@@ -87,8 +87,7 @@ BM_results = tryCatch({
   failed = TRUE
 })
 ```
-Oddly here, the 'ucsc' column isn't 'ucsc' but 'Ensembl'.  I kept the column with that name as it made switching to the real ucsc table easier.  Additionally I renamed the 'entrezgene_id' to 'entrezgene.' Connecting with the dataabse above was very problematic.  It failed to connect 1 out of 5 times and when it did connnect it didn't finish.  I was giving up on it and was going to write a loop to keep sending smaller batches using the try catch statement when finally the whole thing went through.  For future uses a loop is the way to go.  Also don't expect the column names to stay stable.  They change these on almost a monthly basis.  I'd love to switch to something else but unfortunately there isn't anything else.
-
+Oddly here, the 'ucsc' column isn't 'ucsc' but 'ensembl'.  I kept the column with that name as it made switching to the real ucsc table easier.  Additionally I renamed the 'entrezgene_id' to 'entrezgene.' Connecting with the dataabse above was very problematic.  It failed to connect 1 out of 5 times and when it did connnect it didn't finish.  I was giving up on it and was going to write a loop to keep sending smaller batches using the try catch statement when finally the whole thing went through.  For future uses a loop is the way to go.  Also don't expect the column names to stay stable.  They change these on almost a monthly basis.  I'd love to switch to something other than biomaRt, but unfortunately AFAIK there isn't anything else.
 
 
 ## Comments

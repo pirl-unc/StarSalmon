@@ -45,6 +45,7 @@ post_process_salmon = function(
 ){
   
   library(magrittr)
+  library(org.Hs.eg.db)
   
   dir.create(output_dir, showWarnings = F)
   
