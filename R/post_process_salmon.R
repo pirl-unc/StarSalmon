@@ -19,7 +19,6 @@
 #' @param output_upper_quartile_norm T/F
 #' @param counts_or_tpm 'counts' or 'tpm'
 #' @param ref options 'grch38' with ensemble output or 'hg38' with ucsc output
-#' @param thread_num Integer number of threads to run mclapply statements
 #' @param this_script_path Path to script that runs this function for documentation urposes
 #' @return A vector of paths to the files.
 #' 
@@ -34,7 +33,6 @@ post_process_salmon = function(
   gene_biotypes = c('protein_coding', 
                     'IG_C_gene','IG_D_gene', 'IG_J_gene', 'IG_V_gene',
                     'TR_C_gene', 'TR_D_gene', 'TR_J_gene','TR_V_gene'),
-  thread_num = 8,
   output_transcript_matrix = TRUE,
   output_hgnc_matrix = TRUE,
   output_entrez_id_matrix = FALSE,

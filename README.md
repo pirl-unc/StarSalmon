@@ -94,3 +94,8 @@ Oddly here, the 'ucsc' column isn't 'ucsc' but 'ensembl'.  I kept the column wit
 Using test_code.R, I checked if hgnc or entrez was better for not having one ensemble map to them.  Almost all of the duplicates for the ensembl id were from one ensembl id mapping to multiple entrez. Very few of the hgnc caused multimappings.  
 I also checked if using entrez to lookup hgnc and visa versa caused more multimappings.  It wasn't a huge contributor and looking up the genes did find a lot fo new genes:  ~70 for hgnc and ~300 for entrez.
 I skiped using tximport.  I don't see the value of this package, since I'd have to make the tx2gene matrix anyway. That's the hard part.
+
+
+## ToDos
+* This package really should be called something like PostSalmon or PostRNAQuant(once adapted to other quantifiers)
+* Should restrict bm_results to the duplicated ensembl/ucsc and then look at the hgnc and entrez and make some smarter choices there.  Right now you are stuck with whatever is frist in the look-up table
