@@ -7,9 +7,8 @@
 post_process_salmon(this_script_path = "", input_file_paths, output_dir,
   ref = "grch38", gene_biotypes = c("protein_coding", "IG_C_gene",
   "IG_D_gene", "IG_J_gene", "IG_V_gene", "TR_C_gene", "TR_D_gene",
-  "TR_J_gene", "TR_V_gene"), thread_num = 8,
-  output_transcript_matrix = TRUE, output_hgnc_matrix = TRUE,
-  output_entrez_id_matrix = FALSE,
+  "TR_J_gene", "TR_V_gene"), output_transcript_matrix = TRUE,
+  output_hgnc_matrix = TRUE, output_entrez_id_matrix = FALSE,
   output_piped_hugo_entrez_id_matrix = FALSE,
   output_upper_quartile_norm = TRUE,
   output_log2_upper_quartile_norm = TRUE, counts_or_tpm = "counts")
@@ -24,8 +23,6 @@ post_process_salmon(this_script_path = "", input_file_paths, output_dir,
 \item{ref}{options 'grch38' with ensemble output or 'hg38' with ucsc output}
 
 \item{gene_biotypes}{The type of biomaRt gene_biotypes that should be output to the gene level output.}
-
-\item{thread_num}{Integer number of threads to run mclapply statements}
 
 \item{output_transcript_matrix}{T/F}
 

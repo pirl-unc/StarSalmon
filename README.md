@@ -24,7 +24,7 @@ post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-04",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-10",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -32,9 +32,9 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-04
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Now returns the paths of all of the files produced by the function."
+my_comment="Now checks if ENST columns have decimals. If not, if drops the deciamls from the biomart results. This did not increase the number of duplicates in the biomart results."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.1-04 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.1-10 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -46,7 +46,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-04")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-10")
 ```
 
 ## Previous locations
@@ -98,4 +98,4 @@ I skiped using tximport.  I don't see the value of this package, since I'd have 
 
 ## ToDos
 * This package really should be called something like PostSalmon or PostRNAQuant(once adapted to other quantifiers)
-* Should restrict bm_results to the duplicated ensembl/ucsc and then look at the hgnc and entrez and make some smarter choices there.  Right now you are stuck with whatever is frist in the look-up table
+* Should restrict bm_results to the duplicated ensembl/ucsc and then look at the hgnc and entrez and make some smarter choices there.  Right now you are stuck with whatever is frist in the look-up table. Maybe, in the event of multiple matches, take the one that appear in the lookup column.  This should be what the gene would convert to for gmt files as well.

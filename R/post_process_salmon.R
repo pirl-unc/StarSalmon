@@ -125,6 +125,13 @@ post_process_salmon = function(
   if (ref == 'grch38'){
     BM_results = readRDS(StarSalmon::get_biomart_grch38_path())
     #BM_results = readRDS("/rstudio-common/dbortone/packages/StarSalmon/inst/biomart/grch38/bm_result.rds")
+    # some grch38 references put decimals at the end of the names.  if theren't aren't any decimals in the 
+    # genes we need to drop them from the BM-results
+    drop_enst_decimals = nchar(names(dat)[2]) == 15
+    if(drop_enst_decimals){
+      # fyi: this step doesn't produce any more extra duplicates than we had before
+      BM_results$ucsc = substring(BM_results$ucsc, 1, 15) 
+    }
   } else if (ref == 'hg38') {
     BM_results = readRDS(StarSalmon::get_biomart_hg38_path())
     #BM_results = readRDS("/rstudio-common/dbortone/packages/StarSalmon/inst/biomart/hg38/bm_result.rds")
