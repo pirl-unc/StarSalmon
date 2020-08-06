@@ -24,7 +24,7 @@ post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-00",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-01",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -32,9 +32,9 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-00
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Added AnnotationDbi to add 1882 more genes that weren't in the biomart grch38 results."
+my_comment="Dropped test data."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.2-00 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.2-01 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -46,7 +46,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.2-00")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.2-01")
 ```
 
 ## Previous locations
