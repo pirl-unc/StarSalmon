@@ -30,7 +30,7 @@ post_process_salmon = function(
   input_file_paths,# = system(paste0("ls ", RAW_DATA_DIR, "/pipeline_output/star_salmon/*/*_quant.sf"), intern = TRUE)
   output_dir,# = file.path(base_dir, "post_processing", "star_salmon")
   ref = "grch38", # options 'grch38' with ensemble output or 'hg38' with ucsc output
-  gene_biotypes = c('protein_coding', 
+  gene_biotypes = c('protein_coding', 'from AnnotationDbi',
                     'IG_C_gene','IG_D_gene', 'IG_J_gene', 'IG_V_gene',
                     'TR_C_gene', 'TR_D_gene', 'TR_J_gene','TR_V_gene'),
   output_transcript_matrix = TRUE,
@@ -44,6 +44,7 @@ post_process_salmon = function(
   
   library(magrittr)
   library(org.Hs.eg.db)
+  library(data.table)
   
   dir.create(output_dir, showWarnings = F)
   
@@ -86,12 +87,19 @@ post_process_salmon = function(
   # convert to a data table according to the names of the list 
   #   (ie, use.names = T won't assume the genes are in the same order)
   dat = rbindlist(read_data, use.names = TRUE, fill = TRUE)
-
+  
+  
   output_paths = c()
   
   # add the sample names
   dat = data.frame(Sample_ID = names(read_data), dat)
   row.names(dat) = NULL
+  
+  if (ref == 'grch38'){
+    # some grch38 references put decimals at the end of the names. need to drop these so we don't loose
+    #  a gene due to its transcript being a version behind the biomart and AnnotationDbi results
+    names(dat)[2:ncol(dat)] %<>% substring(., 1, 15) 
+  }
   
   if(output_transcript_matrix){
     
@@ -123,24 +131,20 @@ post_process_salmon = function(
   a("")
   a("Using saved biomaRt.")
   if (ref == 'grch38'){
-    BM_results = readRDS(StarSalmon::get_biomart_grch38_path())
-    #BM_results = readRDS("/rstudio-common/dbortone/packages/StarSalmon/inst/biomart/grch38/bm_result.rds")
-    # some grch38 references put decimals at the end of the names.  if theren't aren't any decimals in the 
-    # genes we need to drop them from the BM-results
-    drop_enst_decimals = nchar(names(dat)[2]) == 15
-    if(drop_enst_decimals){
-      # fyi: this step doesn't produce any more extra duplicates than we had before
-      BM_results$ucsc = substring(BM_results$ucsc, 1, 15) 
-    }
+    BM_results = data.table::fread(StarSalmon::get_biomart_grch38_path(), data.table = FALSE)
+    # BM_results = data.table::fread("/rstudio-common/dbortone/packages/StarSalmon/inst/biomart/grch38/bm_result.tsv", data.table = FALSE)
   } else if (ref == 'hg38') {
-    BM_results = readRDS(StarSalmon::get_biomart_hg38_path())
-    #BM_results = readRDS("/rstudio-common/dbortone/packages/StarSalmon/inst/biomart/hg38/bm_result.rds")
-    
-  } 
+    BM_results = data.table::fread(StarSalmon::get_biomart_hg38_path(), data.table = FALSE)
+  } else {
+    stop(paste0("Unrecognized ref: ", ref,".  Please use either 'grch38' or 'hg38'."))
+  }
   
   a("")
   
   BM_results$gene_biotype = factor(BM_results$gene_biotype)
+  
+  # drop all bm transcripts that aren't in the data
+  BM_results = BM_results[BM_results$transcript %in% names(dat)[2:ncol(dat)], ]
   
   # for debugging this it's best to look at the BM_results matrix and make sure
   #   each step is filling in data the right way...
@@ -207,30 +211,20 @@ post_process_salmon = function(
   BM_results$fin_symbols[BM_results$fin_symbols == "NA"] = NA
   BM_results$fin_symbols[BM_results$fin_symbols == ""] = NA
   
-  a("* Dropped ensembl data columns with no information on hgnc or entrez.")
-  BM_results = BM_results[ ((!is.na(BM_results$fin_ids)) & (!is.na(BM_results$fin_symbols))), ]
-
-  
   
   BM_results = tidyr::unite(BM_results, combined_names, fin_symbols, fin_ids, sep = "|", remove = FALSE)
   # drop dat columns that aren't in BM_results
-  dat = dat[, c("Sample_ID", names(dat)[names(dat) %in% BM_results$ucsc])] # went from 190K to 130K probably from loosing gene biotypes
+  dat = dat[, c("Sample_ID", names(dat)[names(dat) %in% BM_results$transcript])] # went from 190K to 130K probably from loosing gene biotypes
   
   make_matrix_of_cols = c()
   if(output_hgnc_matrix) make_matrix_of_cols = c(make_matrix_of_cols, "fin_symbols")
   if(output_entrez_id_matrix) make_matrix_of_cols = c(make_matrix_of_cols, "fin_ids")
   if(output_piped_hugo_entrez_id_matrix) make_matrix_of_cols = c(make_matrix_of_cols, "combined_names")
   
-  # need to transpose so we can have multiple gene names in the same row (can't do that with columns)
-  my_samples = as.character(dat$Sample_ID)
-  my_genes = names(dat)[-1]
-  dat = dat[,-1]
-  dat = data.table(Gene = my_genes, t(dat))
-  names(dat) = c("Gene", my_samples)
-  
   
   for(make_matrix_of_col in make_matrix_of_cols){
-    
+    BM_results[[make_matrix_of_col]][is.na(BM_results[[make_matrix_of_col]])] = ""
+    my_dt = dat[,1, drop = FALSE]
     if(make_matrix_of_col == "fin_symbols"){
       file_prefix = "hgnc_"
     } else if (make_matrix_of_col == "fin_ids"){
@@ -240,19 +234,17 @@ post_process_salmon = function(
     } else {
       stop("Unknown make_matrix_of_col")
     }
-    
-    combined_name_lut = BM_results[[make_matrix_of_col]]
-    names(combined_name_lut) = BM_results[["ucsc"]]
-    
-    my_dt = dat
-    lut_new_names = combined_name_lut[my_dt$Gene] # faster than mclapply and lapply
-    my_dt$Gene = lut_new_names
-    
-    my_dt = my_dt[,-1]
-    my_dt = apply(my_dt, 2, function(x){tapply(x, lut_new_names, sum)}) # tapply reorders the items
-    my_dt %<>% t %>% as.data.table 
-    
-    my_dt = data.table(Sample_ID = my_samples, my_dt)
+    my_genes = sort(unique(BM_results[[make_matrix_of_col]]))
+    my_genes = my_genes[my_genes != ""]
+    for (my_gene in my_genes) {
+      # get the transcritps it matches to
+      my_transcripts = unique(BM_results$transcript[BM_results[[make_matrix_of_col]] == my_gene])
+      if(length(my_transcripts) == 1){
+        my_dt[[my_gene]] = dat[[my_transcripts]]
+      } else if(length(my_transcripts) > 1){
+        my_dt[[my_gene]] = apply(dat[,my_transcripts],1,function(x){sum(x, na.rm = TRUE)})
+      }
+    }
     my_unnorm_path = file.path(output_dir, paste0(file_prefix, counts_or_tpm,".tsv"))
     output_paths = c(output_paths, my_unnorm_path)
     fwrite(my_dt, my_unnorm_path, sep = "\t")

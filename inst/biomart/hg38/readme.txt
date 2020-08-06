@@ -12,3 +12,6 @@ Saved a use_mart result from executing:
 Where "unique_names" came from a star/salmon run with hg38.
 
 This was run in November of 2018.
+
+# On 20200805 renamed the ucsc column name transcript and converted from rds to a tsv. See
+#  ../mapping_genes.R for details

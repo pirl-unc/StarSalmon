@@ -42,3 +42,5 @@ bm_result = tryCatch({
 names(bm_result)[3] = "entrezgene"
 
 saveRDS(bm_result, "bm_result.rds")
+
+# On 20200805 added more genes from AnnotationDbi using mapping_genes.R script

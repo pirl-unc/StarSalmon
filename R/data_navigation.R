@@ -14,7 +14,7 @@
 #' 
 #' @export
 get_biomart_hg38_path = function(){
-  return(system.file("biomart", "hg38", "hsa_ensembl_ucsc.rds", package = "StarSalmon"))
+  return(system.file("biomart", "hg38", "hsa_ensembl_ucsc.tsv", package = "StarSalmon"))
 }
 
 
@@ -34,6 +34,6 @@ get_biomart_hg38_path = function(){
 #' 
 #' @export
 get_biomart_grch38_path = function(){
-  return(system.file("biomart", "grch38", "bm_result.rds", package = "StarSalmon"))
+  return(system.file("biomart", "grch38", "bm_result.tsv", package = "StarSalmon"))
 }
 

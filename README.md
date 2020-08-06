@@ -24,7 +24,7 @@ post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-10",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-00",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -32,9 +32,9 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.1-10
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Now checks if ENST columns have decimals. If not, if drops the deciamls from the biomart results. This did not increase the number of duplicates in the biomart results."
+my_comment="Added AnnotationDbi to add 1882 more genes that weren't in the biomart grch38 results."
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.1-10 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.2-00 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -46,7 +46,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.1-10")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.2-00")
 ```
 
 ## Previous locations
@@ -87,7 +87,7 @@ BM_results = tryCatch({
   failed = TRUE
 })
 ```
-Oddly here, the 'ucsc' column isn't 'ucsc' but 'ensembl'.  I kept the column with that name as it made switching to the real ucsc table easier.  Additionally I renamed the 'entrezgene_id' to 'entrezgene.' Connecting with the dataabse above was very problematic.  It failed to connect 1 out of 5 times and when it did connnect it didn't finish.  I was giving up on it and was going to write a loop to keep sending smaller batches using the try catch statement when finally the whole thing went through.  For future uses a loop is the way to go.  Also don't expect the column names to stay stable.  They change these on almost a monthly basis.  I'd love to switch to something other than biomaRt, but unfortunately AFAIK there isn't anything else.
+I renamed the 'entrezgene_id' to 'entrezgene.' Connecting with the dataabse above was very problematic.  It failed to connect 1 out of 5 times and when it did connnect it didn't finish.  I was giving up on it and was going to write a loop to keep sending smaller batches using the try catch statement when finally the whole thing went through.  For future uses a loop is the way to go.  Also don't expect the column names to stay stable.  They change these on almost a monthly basis.  I'd love to switch to something other than biomaRt, but unfortunately AFAIK there isn't anything else.
 
 
 ## Comments
@@ -95,7 +95,8 @@ Using test_code.R, I checked if hgnc or entrez was better for not having one ens
 I also checked if using entrez to lookup hgnc and visa versa caused more multimappings.  It wasn't a huge contributor and looking up the genes did find a lot fo new genes:  ~70 for hgnc and ~300 for entrez.
 I skiped using tximport.  I don't see the value of this package, since I'd have to make the tx2gene matrix anyway. That's the hard part.
 
+See inst/mapping_genes.R for the addition of another 1882 genes using AnnotationDbi on 20200805.
 
 ## ToDos
-* This package really should be called something like PostSalmon or PostRNAQuant(once adapted to other quantifiers)
-* Should restrict bm_results to the duplicated ensembl/ucsc and then look at the hgnc and entrez and make some smarter choices there.  Right now you are stuck with whatever is frist in the look-up table. Maybe, in the event of multiple matches, take the one that appear in the lookup column.  This should be what the gene would convert to for gmt files as well.
+* This package really should be called something like PostSalmon or PostRNAQuant(once adapted to other quantifiers).
+* Could just merge this package into binfotron.
