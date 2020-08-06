@@ -24,7 +24,7 @@ post_process_salmon(
 ## Assembling this package
 In R:
 ``` r
-housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-01",
+housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-02",
   my_dir = "/datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon")
 ```
 
@@ -32,9 +32,10 @@ housekeeping::assemble_package(package_name = "StarSalmon", my_version = "0.2-01
 In bash:
 ``` bash
 cd /datastore/alldata/shiny-server/rstudio-common/dbortone/packages/StarSalmon
-my_comment="Dropped test data."
+my_comment="Forgot to rebuild 0.2-01"
+git add .
 git commit -am "$my_comment"; git push origin master
-git tag -a 0.2-01 -m "$my_comment"; git push -u origin --tags
+git tag -a 0.2-02 -m "$my_comment"; git push -u origin --tags
 ```
 
 ## Install
@@ -46,7 +47,7 @@ devtools::install_github("Benjamin-Vincent-Lab/StarSalmon")
 
 Or for a specific version:
 ``` r
-devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.2-01")
+devtools::install_github("Benjamin-Vincent-Lab/StarSalmon", ref = "0.2-02")
 ```
 
 ## Previous locations
