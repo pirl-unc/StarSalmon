@@ -1,5 +1,7 @@
 Post processes output from the star salmon pipeline.
 
+** Renamed to [PostRNASeqAlign](https://github.com/Benjamin-Vincent-Lab/PostRNASeqAlign) **
+
 ## Example
 ``` r
 post_process_salmon(
