@@ -1,6 +1,6 @@
 Post processes output from the star salmon pipeline.
 
-** Renamed to [PostRNASeqAlign](https://github.com/Benjamin-Vincent-Lab/PostRNASeqAlign) **
+** Depricated. Renamed and moved to [PostRNASeqAlign](https://github.com/Benjamin-Vincent-Lab/PostRNASeqAlign) **
 
 ## Example
 ``` r
